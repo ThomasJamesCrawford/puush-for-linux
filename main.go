@@ -98,5 +98,5 @@ func main() {
 
 	clipboard.WriteAll(resp.URL)
 
-    exec.Command("notify-send", resp.URL).Run()
+	exec.Command("notify-send", resp.URL).Run()
 }

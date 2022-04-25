@@ -74,23 +74,23 @@ func main() {
 	}
 
 	if _, err := client.PutObject(context.TODO(), &s3.PutObjectInput{
-		Bucket: aws.String(*bucketName),
-		Key:    aws.String(keyName),
-		Body:   freshPtr,
+		Bucket:      aws.String(*bucketName),
+		Key:         aws.String(keyName),
+		Body:        freshPtr,
+		ContentType: aws.String("image/png"),
 	}); err != nil {
 		panic(err)
 	}
 
 	psClient := s3.NewPresignClient(client)
 
-	oneDayFromNow := time.Now().Add(time.Hour * 24)
+	presignOptions := s3.WithPresignExpires(time.Second * 604800)
 
 	resp, err := psClient.PresignGetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket:                     aws.String(*bucketName),
 		Key:                        aws.String(keyName),
-		ResponseExpires:            &oneDayFromNow,
 		ResponseContentDisposition: aws.String("inline"),
-	})
+	}, presignOptions)
 
 	if err != nil {
 		panic(err)
